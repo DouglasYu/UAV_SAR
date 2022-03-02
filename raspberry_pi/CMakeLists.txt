@@ -3,8 +3,8 @@ project(dji_sdk_demo_linux C)
 
 set(CMAKE_C_FLAGS "-pthread -std=gnu99")
 set(CMAKE_EXE_LINKER_FLAGS "-pthread")
-set(CMAKE_C_COMPILER "arm-linux-gnueabihf-gcc")
-set(CMAKE_CXX_COMPILER "arm-linux-gnueabihf-g++")
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
 # add_definitions(-D_GNU_SOURCE)
 
 # if (NOT USE_SYSTEM_ARCH)
@@ -39,7 +39,6 @@ link_libraries(${CMAKE_CURRENT_LIST_DIR}/../psdk_lib/lib/${TOOLCHAIN_NAME}/lib${
 
 add_executable(${PROJECT_NAME}
         ${MODULE_APP_SRC}
-        ${MODULE_SAMPLE_SRC}
         ${MODULE_COMMON_SRC}
         ${MODULE_HAL_SRC})
 target_link_libraries(${PROJECT_NAME} m usb-1.0)

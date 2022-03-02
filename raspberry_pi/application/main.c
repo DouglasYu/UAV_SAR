@@ -42,7 +42,7 @@
 #include "osal/osal.h"
 #include "osal/osal_fs.h"
 #include "osal/osal_socket.h"
-#include "upgrade_platform_opt/upgrade_platform_opt_linux.h"
+// #include "upgrade_platform_opt/upgrade_platform_opt_linux.h"
 #include "../hal/hal_uart.h"
 // #include "../hal/hal_network.h"
 // #include "../hal/hal_usb_bulk.h"
@@ -83,9 +83,9 @@ static T_DjiReturnCode DjiUser_PrintConsole(const uint8_t *data, uint16_t dataLe
 static T_DjiReturnCode DjiUser_LocalWrite(const uint8_t *data, uint16_t dataLen);
 static T_DjiReturnCode DjiUser_LocalWriteFsInit(const char *path);
 static void *DjiUser_MonitorTask(void *argument);
-static T_DjiReturnCode DjiTest_HighPowerApplyPinInit();
-static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState);
-static bool DjiUser_CheckNetCableConnectStatus(void);
+// static T_DjiReturnCode DjiTest_HighPowerApplyPinInit();
+// static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState);
+// static bool DjiUser_CheckNetCableConnectStatus(void);
 
 /* Exported functions definition ---------------------------------------------*/
 
@@ -295,75 +295,75 @@ delay:
     }
 }
 
-static T_DjiReturnCode DjiTest_HighPowerApplyPinInit()
-{
-    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
-}
+// static T_DjiReturnCode DjiTest_HighPowerApplyPinInit()
+// {
+//     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+// }
 
-static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState)
-{
-    //attention: please pull up the HWPR pin state by hardware.
-    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
-}
+// static T_DjiReturnCode DjiTest_WriteHighPowerApplyPin(E_DjiPowerManagementPinState pinState)
+// {
+//     //attention: please pull up the HWPR pin state by hardware.
+//     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+// }
 
 #pragma GCC diagnostic pop
 
-static bool DjiUser_CheckNetCableConnectStatus(void)
-{
-    FILE *fp;
-    char *ret = NULL;
-    char systemCmd[DJI_SYSTEM_CMD_STR_MAX_SIZE] = {0};
-    char lineBuf[DJI_SYSTEM_RESULT_STR_MAX_SIZE] = {0};
+// static bool DjiUser_CheckNetCableConnectStatus(void)
+// {
+//     FILE *fp;
+//     char *ret = NULL;
+//     char systemCmd[DJI_SYSTEM_CMD_STR_MAX_SIZE] = {0};
+//     char lineBuf[DJI_SYSTEM_RESULT_STR_MAX_SIZE] = {0};
 
-    sprintf(systemCmd, "ifconfig %s | grep RUNNING", LINUX_NETWORK_DEV);
-    fp = popen(systemCmd, "r");
-    if (fp == NULL) {
-        return false;
-    }
+//     sprintf(systemCmd, "ifconfig %s | grep RUNNING", LINUX_NETWORK_DEV);
+//     fp = popen(systemCmd, "r");
+//     if (fp == NULL) {
+//         return false;
+//     }
 
-    ret = fgets(lineBuf, sizeof(lineBuf), fp);
-    if (ret == NULL) {
-        return false;
-    }
+//     ret = fgets(lineBuf, sizeof(lineBuf), fp);
+//     if (ret == NULL) {
+//         return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 int main(int argc, char **argv)
 {
     T_DjiReturnCode returnCode;
     T_DjiUserInfo userInfo;
     T_DjiAircraftInfoBaseInfo aircraftInfoBaseInfo;
-    DjiTestDataTransmissionConfig dataTransmissionConfig;
-    T_DjiOsalHandler osalHandler = {
-        .TaskCreate = Osal_TaskCreate,
-        .TaskDestroy = Osal_TaskDestroy,
-        .TaskSleepMs = Osal_TaskSleepMs,
-        .MutexCreate= Osal_MutexCreate,
-        .MutexDestroy = Osal_MutexDestroy,
-        .MutexLock = Osal_MutexLock,
-        .MutexUnlock = Osal_MutexUnlock,
-        .SemaphoreCreate = Osal_SemaphoreCreate,
-        .SemaphoreDestroy = Osal_SemaphoreDestroy,
-        .SemaphoreWait = Osal_SemaphoreWait,
-        .SemaphoreTimedWait = Osal_SemaphoreTimedWait,
-        .SemaphorePost = Osal_SemaphorePost,
-        .Malloc = Osal_Malloc,
-        .Free = Osal_Free,
-        .GetTimeMs = Osal_GetTimeMs,
-        .GetTimeUs = Osal_GetTimeUs,
-    };
+    // DjiTestDataTransmissionConfig dataTransmissionConfig;
+    // T_DjiOsalHandler osalHandler = {
+    //     .TaskCreate = Osal_TaskCreate,
+    //     .TaskDestroy = Osal_TaskDestroy,
+    //     .TaskSleepMs = Osal_TaskSleepMs,
+    //     .MutexCreate= Osal_MutexCreate,
+    //     .MutexDestroy = Osal_MutexDestroy,
+    //     .MutexLock = Osal_MutexLock,
+    //     .MutexUnlock = Osal_MutexUnlock,
+    //     .SemaphoreCreate = Osal_SemaphoreCreate,
+    //     .SemaphoreDestroy = Osal_SemaphoreDestroy,
+    //     .SemaphoreWait = Osal_SemaphoreWait,
+    //     .SemaphoreTimedWait = Osal_SemaphoreTimedWait,
+    //     .SemaphorePost = Osal_SemaphorePost,
+    //     .Malloc = Osal_Malloc,
+    //     .Free = Osal_Free,
+    //     .GetTimeMs = Osal_GetTimeMs,
+    //     .GetTimeUs = Osal_GetTimeUs,
+    // };
     T_DjiLoggerConsole printConsole = {
         .func = DjiUser_PrintConsole,
         .consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_INFO,
         .isSupportColor = true,
     };
 
-    T_DjiLoggerConsole localRecordConsole = {
-        .consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_DEBUG,
-        .func = DjiUser_LocalWrite,
-        .isSupportColor = false,
-    };
+    // T_DjiLoggerConsole localRecordConsole = {
+    //     .consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_DEBUG,
+    //     .func = DjiUser_LocalWrite,
+    //     .isSupportColor = false,
+    // };
 
     T_DjiHalUartHandler uartHandler = {
         .UartInit = HalUart_Init,
@@ -415,11 +415,11 @@ int main(int argc, char **argv)
     //     .TcpRecvData = Osal_TcpRecvData,
     // };
 
-    returnCode = DjiPlatform_RegOsalHandler(&osalHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        printf("register osal handler error");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    }
+    // returnCode = DjiPlatform_RegOsalHandler(&osalHandler);
+    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     printf("register osal handler error");
+    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    // }
 
     returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -462,11 +462,11 @@ int main(int argc, char **argv)
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }
 
-    returnCode = DjiLogger_AddConsole(&localRecordConsole);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        printf("add printf console error");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    }
+    // returnCode = DjiLogger_AddConsole(&localRecordConsole);
+    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     printf("add printf console error");
+    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    // }
 
     returnCode = DjiUser_FillInUserInfo(&userInfo);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -494,18 +494,18 @@ int main(int argc, char **argv)
     }
 
     if (aircraftInfoBaseInfo.mountPosition == DJI_MOUNT_POSITION_EXTENSION_PORT) {
-        dataTransmissionConfig.isEnableLowSpeedDataChannel = true;
-        dataTransmissionConfig.isEnableHighSpeedDataChannel = false;
+        // dataTransmissionConfig.isEnableLowSpeedDataChannel = true;
+        // dataTransmissionConfig.isEnableHighSpeedDataChannel = false;
 
-        returnCode = DjiTest_DataTransmissionStartService(dataTransmissionConfig);
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("data transmission init error");
-        }
+        // returnCode = DjiTest_DataTransmissionStartService(dataTransmissionConfig);
+        // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        //     USER_LOG_ERROR("data transmission init error");
+        // }
 
-        returnCode = DjiTest_WidgetInteractionStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("widget interaction sample init error");
-        }
+        // returnCode = DjiTest_WidgetInteractionStartService();
+        // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        //     USER_LOG_ERROR("widget interaction sample init error");
+        // }
     } else {
 #ifdef CONFIG_MODULE_SAMPLE_POWER_MANAGEMENT_ON
         T_DjiTestApplyHighPowerHandler applyHighPowerHandler = {
@@ -631,13 +631,13 @@ int main(int argc, char **argv)
         USER_LOG_ERROR("start sdk application error");
     }
 
-    if (pthread_create(&s_monitorThread, NULL, DjiUser_MonitorTask, NULL) != 0) {
-        USER_LOG_ERROR("create monitor task fail.");
-    }
+    // if (pthread_create(&s_monitorThread, NULL, DjiUser_MonitorTask, NULL) != 0) {
+    //     USER_LOG_ERROR("create monitor task fail.");
+    // }
 
-    if (pthread_setname_np(s_monitorThread, "monitor task") != 0) {
-        USER_LOG_ERROR("set name for monitor task fail.");
-    }
+    // if (pthread_setname_np(s_monitorThread, "monitor task") != 0) {
+    //     USER_LOG_ERROR("set name for monitor task fail.");
+    // }
 
     while (1) {
         sleep(1);
