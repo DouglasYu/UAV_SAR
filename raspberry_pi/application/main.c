@@ -44,7 +44,7 @@
 #include "osal/osal_socket.h"
 // #include "upgrade_platform_opt/upgrade_platform_opt_linux.h"
 #include "../hal/hal_uart.h"
-// #include "../hal/hal_network.h"
+#include "../hal/hal_network.h"
 // #include "../hal/hal_usb_bulk.h"
 #include "dji_sdk_app_info.h"
 #include "dji_aircraft_info.h"
@@ -335,24 +335,24 @@ int main(int argc, char **argv)
     T_DjiUserInfo userInfo;
     T_DjiAircraftInfoBaseInfo aircraftInfoBaseInfo;
     // DjiTestDataTransmissionConfig dataTransmissionConfig;
-    // T_DjiOsalHandler osalHandler = {
-    //     .TaskCreate = Osal_TaskCreate,
-    //     .TaskDestroy = Osal_TaskDestroy,
-    //     .TaskSleepMs = Osal_TaskSleepMs,
-    //     .MutexCreate= Osal_MutexCreate,
-    //     .MutexDestroy = Osal_MutexDestroy,
-    //     .MutexLock = Osal_MutexLock,
-    //     .MutexUnlock = Osal_MutexUnlock,
-    //     .SemaphoreCreate = Osal_SemaphoreCreate,
-    //     .SemaphoreDestroy = Osal_SemaphoreDestroy,
-    //     .SemaphoreWait = Osal_SemaphoreWait,
-    //     .SemaphoreTimedWait = Osal_SemaphoreTimedWait,
-    //     .SemaphorePost = Osal_SemaphorePost,
-    //     .Malloc = Osal_Malloc,
-    //     .Free = Osal_Free,
-    //     .GetTimeMs = Osal_GetTimeMs,
-    //     .GetTimeUs = Osal_GetTimeUs,
-    // };
+    T_DjiOsalHandler osalHandler = {
+        .TaskCreate = Osal_TaskCreate,
+        .TaskDestroy = Osal_TaskDestroy,
+        .TaskSleepMs = Osal_TaskSleepMs,
+        .MutexCreate= Osal_MutexCreate,
+        .MutexDestroy = Osal_MutexDestroy,
+        .MutexLock = Osal_MutexLock,
+        .MutexUnlock = Osal_MutexUnlock,
+        .SemaphoreCreate = Osal_SemaphoreCreate,
+        .SemaphoreDestroy = Osal_SemaphoreDestroy,
+        .SemaphoreWait = Osal_SemaphoreWait,
+        .SemaphoreTimedWait = Osal_SemaphoreTimedWait,
+        .SemaphorePost = Osal_SemaphorePost,
+        .Malloc = Osal_Malloc,
+        .Free = Osal_Free,
+        .GetTimeMs = Osal_GetTimeMs,
+        .GetTimeUs = Osal_GetTimeUs,
+    };
     T_DjiLoggerConsole printConsole = {
         .func = DjiUser_PrintConsole,
         .consoleLevel = DJI_LOGGER_CONSOLE_LOG_LEVEL_INFO,
@@ -373,10 +373,10 @@ int main(int argc, char **argv)
         .UartGetStatus = HalUart_GetStatus,
     };
 
-    // T_DjiHalNetworkHandler networkHandler = {
-    //     .NetworkInit = HalNetWork_Init,
-    //     .NetworkDeInit = HalNetWork_DeInit,
-    // };
+    T_DjiHalNetworkHandler networkHandler = {
+        .NetworkInit = HalNetWork_Init,
+        .NetworkDeInit = HalNetWork_DeInit,
+    };
 
     // T_DjiHalUsbBulkHandler usbBulkHandler = {
     //     .UsbBulkInit = HalUsbBulk_Init,
@@ -415,11 +415,11 @@ int main(int argc, char **argv)
     //     .TcpRecvData = Osal_TcpRecvData,
     // };
 
-    // returnCode = DjiPlatform_RegOsalHandler(&osalHandler);
-    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-    //     printf("register osal handler error");
-    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    // }
+    returnCode = DjiPlatform_RegOsalHandler(&osalHandler);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        printf("register osal handler error");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
 
     returnCode = DjiPlatform_RegHalUartHandler(&uartHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -433,11 +433,11 @@ int main(int argc, char **argv)
     //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     // }
 
-    // returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
-    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-    //     printf("register hal network handler error");
-    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    // }
+    returnCode = DjiPlatform_RegHalNetworkHandler(&networkHandler);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        printf("register hal network handler error");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
 
     // returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
     // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
