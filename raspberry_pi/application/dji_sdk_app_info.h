@@ -35,11 +35,11 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 // ATTENTION: User must goto https://developer.dji.com/user/apps/#all to create your own dji sdk application, get dji sdk application
 // information then fill in the application information here.
-#define USER_APP_NAME               "your_app_name"
-#define USER_APP_ID                 "your_app_id"
-#define USER_APP_KEY                "your_app_key"
-#define USER_APP_LICENSE            "your_app_license"
-#define USER_DEVELOPER_ACCOUNT      "your_developer_account"
+#define USER_APP_NAME               "UAV_SAR"
+#define USER_APP_ID                 "115504"
+#define USER_APP_KEY                "1214e064ac27d97cadadf6cf53dadbe"
+#define USER_APP_LICENSE            "nYjI9ypc9Hb+ferZnSTS64Ok9PyULU3zs/QP4EmDCpNrIdkc1+xIBtn95mI0RP46wCNOuq7nEc+/taiUg8oAqsaQMclCHvYwvbHyF8UjDjgS0XUZvDVNPuXKDP7n7J5L/WkaCZg/Zi/ZXicdsl1fexdRdozIg8ItkMSlb0dBifKg2nw6H6V93ERlPz04oKBUJeYkBYFTaFdQxzikdU3dChe7R21WAdSd+A8bchHKixzM951Xg1rg/1Jk2dpmtoQF04jHlflCv3CfVpE4fX7ZL8kZvtvcKfEh9AeqHIoNQ1zqt4RAVrANR7p6TsTiGaGlmiV59kOFUmHActvvdhKrfQ=="
+#define USER_DEVELOPER_ACCOUNT      "zeduo.18"
 #define USER_BAUD_RATE              "460800"
 
 /* Exported types ------------------------------------------------------------*/

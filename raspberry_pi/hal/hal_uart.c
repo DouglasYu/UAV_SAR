@@ -27,7 +27,7 @@
 #include "hal_uart.h"
 
 /* Private constants ---------------------------------------------------------*/
-#define UART_DEV_NAME_STR_SIZE             (128)
+#define UART_DEV_NAME_STR_SIZE             (54)  //DOUGLAS Used to be 128. There was a warning
 #define DJI_SYSTEM_CMD_STR_MAX_SIZE        (64)
 #define DJI_SYSTEM_RESULT_STR_MAX_SIZE     (128)
 

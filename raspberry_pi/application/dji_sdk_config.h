@@ -34,6 +34,13 @@ extern "C" {
 #endif
 
 /* Exported constants --------------------------------------------------------*/
+#ifndef PSDK_ARCH_SYS_LINUX  //DOUGLAS
+#define PSDK_ARCH_SYS_LINUX
+#endif
+
+#ifndef SYSTEM_ARCH_LINUX
+#define SYSTEM_ARCH_LINUX
+#endif
 // #define CONFIG_MODULE_SAMPLE_POWER_MANAGEMENT_ON
 
 // #define CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON
