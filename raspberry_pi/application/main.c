@@ -465,6 +465,7 @@ int main(int argc, char **argv)
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
 
+    /* two consoles. one for terminal printing, one for log file writing. */
     returnCode = DjiLogger_AddConsole(&printConsole);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         printf("add printf console error");
@@ -504,7 +505,6 @@ int main(int argc, char **argv)
     }
 
     /* Main sequence starts */
-    printf("Mount position: %d\n", aircraftInfoBaseInfo.mountPosition);
 
     /* The following test sequence is commented out cause we dont need them tentatively */
     // if (aircraftInfoBaseInfo.mountPosition == DJI_MOUNT_POSITION_EXTENSION_PORT) {
@@ -585,7 +585,7 @@ int main(int argc, char **argv)
 //             USER_LOG_ERROR("widget interaction test init error");
 //         }
 // #else
-//         returnCode = DjiTest_WidgetStartService();
+        // returnCode = DjiTest_WidgetStartService();
 //         if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
 //             USER_LOG_ERROR("widget sample init error");
 //         }
@@ -656,10 +656,11 @@ int main(int argc, char **argv)
     // }
 
     /* ----------------- User defined sequence starts! ---------------------- */
+    /* start widget service */
 
-    /* get the posture and location of the drone */
-    
-    
+    /* tests */
+    printf("Mount position: %d\n", aircraftInfoBaseInfo.mountPosition);
+
 
     while (1) {
         sleep(1);

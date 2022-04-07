@@ -10,6 +10,15 @@
 #ifndef FC_SUBSCRIPTION
 #define FC_SUBSCRIPTION
 
+#define TELEMETRY_LOG_FOLDER "telemetry_logs"
+#define QUATERNION_LOG_PATH "quaternion_logs"
+#define GPS_POS_LOG_PATH "gps_position_logs"
+#define VELOCITY_LOG_PATH "velocity_logs"
+
+static bool s_userFcSubscriptionDataShow = false;
+
+T_DjiReturnCode FcSubscriptionStartService(void);
+T_DjiReturnCode FcSubscriptionStopService(void);
 
 
 #endif
