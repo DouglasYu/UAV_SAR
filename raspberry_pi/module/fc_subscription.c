@@ -6,6 +6,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <utils/util_misc.h>
+#include <time.h>
 #include "dji_logger.h"
 #include "dji_platform.h"
 #include "fc_subscription.h"
@@ -31,9 +32,9 @@ FILE* s_velocityLog;
 T_DjiReturnCode FcSubscriptionStartService(void)
 {
     T_DjiReturnCode djiStat;
-    T_DjiOsalHandler *osalHandler = NULL;
+    // T_DjiOsalHandler *osalHandler = NULL;
 
-    osalHandler = DjiPlatform_GetOsalHandler();
+    // osalHandler = DjiPlatform_GetOsalHandler();
     djiStat = DjiFcSubscription_Init();
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("init data subscription module error.");
@@ -163,6 +164,9 @@ T_DjiReturnCode FcSubscriptionStopService(void){
     fclose(s_quaternionLog);
     fclose(s_gpsLog);
     fclose(s_velocityLog);
+    s_quaternionLog = NULL;
+    s_gpsLog = NULL;
+    s_velocityLog = NULL;
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }

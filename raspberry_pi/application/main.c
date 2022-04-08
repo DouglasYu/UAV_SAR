@@ -55,6 +55,7 @@
 // #include "data_transmission/test_data_transmission.h"
 #include "dji_sdk_config.h"
 #include "fc_subscription.h"
+#include "widget.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define DJI_LOG_PATH                    "Logs/DJI"
@@ -657,6 +658,11 @@ int main(int argc, char **argv)
 
     /* ----------------- User defined sequence starts! ---------------------- */
     /* start widget service */
+    returnCode = My_WidgetStartService();
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Cannot start widget service.");
+        return returnCode;
+    }
 
     /* tests */
     printf("Mount position: %d\n", aircraftInfoBaseInfo.mountPosition);

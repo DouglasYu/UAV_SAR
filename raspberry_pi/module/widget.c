@@ -9,6 +9,8 @@
 #include <dji_logger.h>
 #include <dji_platform.h>
 #include <stdio.h>
+#include <time.h>
+#include "fc_subscription.h"
 #include "../utils/util_misc.h"
 
 /* Private constants ---------------------------------------------------------*/
@@ -27,7 +29,7 @@ static T_DjiReturnCode DjiTestWidget_GetWidgetValue(E_DjiWidgetType widgetType, 
 /* Private variables ---------------------------------------------------------*/
 static const T_DjiWidgetHandlerListItem s_widgetHandlerList[] = {
     {0, DJI_WIDGET_TYPE_SWITCH, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
-    {1, DJI_WIDGET_TYPE_BUTTON, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
+    {1, DJI_WIDGET_TYPE_SWITCH, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
     {2, DJI_WIDGET_TYPE_BUTTON, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL}
 };
 
@@ -45,6 +47,7 @@ static int32_t s_widgetValueList[sizeof(s_widgetHandlerList) / sizeof(T_DjiWidge
 static const uint32_t s_widgetHandlerListCount = sizeof(s_widgetHandlerList) / sizeof(T_DjiWidgetHandlerListItem);
 static bool s_isWidgetFileDirPathConfigured = false;
 static char s_widgetFileDirPath[DJI_FILE_PATH_SIZE_MAX] = {0};
+static T_DjiTaskHandle s_recordThread = NULL;
 
 /* Exported functions definition ---------------------------------------------*/
 T_DjiReturnCode My_WidgetStartService(void)
@@ -123,14 +126,82 @@ T_DjiReturnCode My_WidgetStartService(void)
 }
 
 /* Private functions definition ---------------------------------------------*/
+static void RecordTask(void *arg){
+    USER_UTIL_UNUSED(arg);
+
+    time_t currentTime = time(NULL);
+    struct tm *localTime = localtime(&currentTime);
+    char command[100];
+
+	sprintf(command, "arecord -D \"plughw:2,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
+        localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
+        localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+
+    system(command);
+}
+
 static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, uint32_t index, int32_t value,
                                                     void *userData)
 {
     USER_UTIL_UNUSED(userData);
 
+    T_DjiOsalHandler *osalHandler = NULL;
+    T_DjiReturnCode djiStat;
+    osalHandler = DjiPlatform_GetOsalHandler();
+
+    /* debug message */
     USER_LOG_INFO("Set widget value, widgetType = %s, widgetIndex = %d ,widgetValue = %d",
                   s_widgetTypeNameArray[widgetType], index, value);
     s_widgetValueList[index] = value;
+
+    /* control logic */
+    switch (index)
+    {
+    /** this switch controls the power of the SAR module */
+    case 0:
+        if (value == 1){
+            /* turn on SAR module power */
+            USER_LOG_INFO("SAR power on.");
+        } else {
+            /* turn off SAR module power */
+            USER_LOG_INFO("SAR power off.");
+        }
+        
+        break;
+
+    /* This button controls the recording of coming back signals */
+    case 1:
+        if(value == 1){
+            /* start telemetry subscription */
+            djiStat = FcSubscriptionStartService();
+            if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+                USER_LOG_ERROR("Start fcSubscription service error.");
+                return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+            }
+            /* start recording process */
+            if(s_recordThread == NULL){
+                osalHandler->TaskCreate("arecord_task", RecordTask, 4096, NULL, &s_recordThread);
+            }
+        } else {
+            /* stop telemetry subscription */
+            djiStat = FcSubscriptionStopService();
+            if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+                USER_LOG_ERROR("Stop fcSubscription service error.");
+                return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+            }
+            /* kill the recording thread */
+            system("sudo killall -9 arecord");
+        }
+        break;
+
+    /* This button will invoke a python script to process the received data */
+    case 2:
+        /* TODO */
+        break;
+    
+    default:
+        break;
+    }
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
