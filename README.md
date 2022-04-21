@@ -27,6 +27,7 @@ In the same way, *hardware abstraction layer* utilities are defined in `raspberr
 3. On your computer, use any terminal tools such as `MobaXterm` to connect to the ip address you defined.
 4. Tada! You've successfully get access to the Raspberry Pi!
 5. If you want internet connection on Raspberry Pi, use your phone as a router, then setup a local connection to it. In the terminal of Raspberry Pi, type `sudo raspi-config`, select `system` to reveal the option for wireless connection. In this way you can conncet to the WiFi of your phone. Once your computer is connnected to the same network, you can start a ssh link.
+6. Important: If you are flashing your SD card, it is possible that the Raspbeery Pi will not create a default user automatically. You need to connect it to a monitor and a keyboard to manually create an user.
 
 ### Cross Compile
 

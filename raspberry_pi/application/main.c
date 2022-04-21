@@ -658,11 +658,11 @@ int main(int argc, char **argv)
 
     /* ----------------- User defined sequence starts! ---------------------- */
     /* start widget service */
-    returnCode = My_WidgetStartService();
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("Cannot start widget service.");
-        return returnCode;
-    }
+    // returnCode = My_WidgetStartService();
+    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("Cannot start widget service.");
+    //     return returnCode;
+    // }
 
     /* tests */
     printf("Mount position: %d\n", aircraftInfoBaseInfo.mountPosition);

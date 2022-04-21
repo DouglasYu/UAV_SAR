@@ -133,7 +133,7 @@ static void RecordTask(void *arg){
     struct tm *localTime = localtime(&currentTime);
     char command[100];
 
-	sprintf(command, "arecord -D \"plughw:2,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
+	sprintf(command, "arecord -D \"plughw:3,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
         localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
         localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
 
