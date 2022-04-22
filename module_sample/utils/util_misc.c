@@ -23,7 +23,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef SYSTEM_ARCH_LINUX
+// #ifdef SYSTEM_ARCH_LINUX
 
 #include <stdio.h>
 #include "util_misc.h"
@@ -97,6 +97,6 @@ void DjiUserUtil_PrintProgressBar(uint16_t currentProgress, uint16_t totalProgre
 
 /* Private functions definition-----------------------------------------------*/
 
-#endif
+// #endif
 
 /****************** (C) COPYRIGHT DJI Innovations *****END OF FILE****/

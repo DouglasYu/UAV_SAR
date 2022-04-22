@@ -37,6 +37,15 @@ If you want to compile your code on your local machine, such as on an x86_64 Lin
 sudo apt-get install gcc-arm-linux-gnueabihf
 sudo apt-get install g++-arm-linux-gnueabihf
 ```
+
+#### Toubleshooting
+
+If the linking process failed and errors like `undefined reference to 'DjiUserUtil_GetCurrentFileDirPath'` occured, try the following steps:
+
+1. Check `CMakeLists.txt` to see if the corresponding `.C` file is included.
+
+2. Make sure the missing function exists in the `.C` file that is not commented out or ignored by `ifndef`.
+
 ### Requirements
 
 #### PaylaodSDK shoud do:

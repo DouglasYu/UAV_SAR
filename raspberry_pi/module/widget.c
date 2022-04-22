@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "fc_subscription.h"
-#include "../utils/util_misc.h"
+#include "utils/util_misc.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define FC_SUBSCRIPTION_TASK_FREQ       (1)

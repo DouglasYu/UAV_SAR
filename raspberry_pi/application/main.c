@@ -68,6 +68,7 @@
 #define DJI_SYSTEM_RESULT_STR_MAX_SIZE  (128)
 
 #define DJI_USE_WIDGET_INTERACTION       0
+// #define USER_UTIL_UNUSED(x)                                 ((x) = (x))
 
 /* Private types -------------------------------------------------------------*/
 typedef struct {
@@ -255,54 +256,54 @@ static T_DjiReturnCode DjiUser_LocalWriteFsInit(const char *path)
 #pragma GCC diagnostic ignored "-Wmissing-noreturn"
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
-static void *DjiUser_MonitorTask(void *argument)
-{
-    unsigned int i = 0;
-    unsigned int threadCount = 0;
-    pid_t *tidList = NULL;
-    T_ThreadAttribute *threadAttribute = NULL;
-    T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
+// static void *DjiUser_MonitorTask(void *argument)
+// {
+//     unsigned int i = 0;
+//     unsigned int threadCount = 0;
+//     pid_t *tidList = NULL;
+//     T_ThreadAttribute *threadAttribute = NULL;
+//     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
 
-    USER_UTIL_UNUSED(argument);
+//     USER_UTIL_UNUSED(argument);
 
-    while (1) {
-        threadCount = Monitor_GetThreadCountOfProcess(getpid());
-        tidList = osalHandler->Malloc(threadCount * sizeof(pid_t));
-        if (tidList == NULL) {
-            USER_LOG_ERROR("malloc fail.");
-            goto delay;
-        }
-        Monitor_GetTidListOfProcess(getpid(), tidList, threadCount);
+//     while (1) {
+//         threadCount = Monitor_GetThreadCountOfProcess(getpid());
+//         tidList = osalHandler->Malloc(threadCount * sizeof(pid_t));
+//         if (tidList == NULL) {
+//             USER_LOG_ERROR("malloc fail.");
+//             goto delay;
+//         }
+//         Monitor_GetTidListOfProcess(getpid(), tidList, threadCount);
 
-        threadAttribute = osalHandler->Malloc(threadCount * sizeof(T_ThreadAttribute));
-        if (threadAttribute == NULL) {
-            USER_LOG_ERROR("malloc fail.");
-            goto freeTidList;
-        }
-        for (i = 0; i < threadCount; ++i) {
-            threadAttribute[i].tid = tidList[i];
-        }
+//         threadAttribute = osalHandler->Malloc(threadCount * sizeof(T_ThreadAttribute));
+//         if (threadAttribute == NULL) {
+//             USER_LOG_ERROR("malloc fail.");
+//             goto freeTidList;
+//         }
+//         for (i = 0; i < threadCount; ++i) {
+//             threadAttribute[i].tid = tidList[i];
+//         }
 
-        USER_LOG_DEBUG("thread pcpu:");
-        USER_LOG_DEBUG("tid\tname\tpcpu");
-        for (i = 0; i < threadCount; ++i) {
-            threadAttribute[i].pcpu = Monitor_GetPcpuOfThread(getpid(), tidList[i]);
-            Monitor_GetNameOfThread(getpid(), tidList[i], threadAttribute[i].name, sizeof(threadAttribute[i].name));
-            USER_LOG_DEBUG("%d\t%15s\t%f %%.", threadAttribute[i].tid, threadAttribute[i].name,
-                           threadAttribute[i].pcpu);
-        }
+//         USER_LOG_DEBUG("thread pcpu:");
+//         USER_LOG_DEBUG("tid\tname\tpcpu");
+//         for (i = 0; i < threadCount; ++i) {
+//             threadAttribute[i].pcpu = Monitor_GetPcpuOfThread(getpid(), tidList[i]);
+//             Monitor_GetNameOfThread(getpid(), tidList[i], threadAttribute[i].name, sizeof(threadAttribute[i].name));
+//             USER_LOG_DEBUG("%d\t%15s\t%f %%.", threadAttribute[i].tid, threadAttribute[i].name,
+//                            threadAttribute[i].pcpu);
+//         }
 
-        USER_LOG_DEBUG("heap used: %d B.", Monitor_GetHeapUsed(getpid()));
-        USER_LOG_DEBUG("stack used: %d B.", Monitor_GetStackUsed(getpid()));
+//         USER_LOG_DEBUG("heap used: %d B.", Monitor_GetHeapUsed(getpid()));
+//         USER_LOG_DEBUG("stack used: %d B.", Monitor_GetStackUsed(getpid()));
 
-        osalHandler->Free(threadAttribute);
-freeTidList:
-        osalHandler->Free(tidList);
+//         osalHandler->Free(threadAttribute);
+// freeTidList:
+//         osalHandler->Free(tidList);
 
-delay:
-        sleep(10);
-    }
-}
+// delay:
+//         sleep(10);
+//     }
+// }
 
 static T_DjiReturnCode DjiTest_HighPowerApplyPinInit()
 {

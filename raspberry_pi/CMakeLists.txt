@@ -22,20 +22,23 @@ file(GLOB_RECURSE MODULE_COMMON_SRC ../common/*.c)
 file(GLOB_RECURSE MODULE_HAL_SRC hal/*.c)
 file(GLOB_RECURSE MODULE_APP_SRC application/*.c)
 file(GLOB_RECURSE MODULE_SRC module/*.c)
+file(GLOB_RECURSE UTILS ../module_sample/utils/*.c)
 # file(GLOB_RECURSE MODULE_SAMPLE_SRC ../module_sample/*.c)
 
 # include_directories(../module_sample)
 include_directories(../common)
 include_directories(module)
+include_directories(../module_sample)
 
 include_directories(../psdk_lib/include)
 link_directories(../psdk_lib/lib/${TOOLCHAIN_NAME})
 link_libraries(${CMAKE_CURRENT_LIST_DIR}/../psdk_lib/lib/${TOOLCHAIN_NAME}/libpayloadsdk.a)
 
 add_executable(${PROJECT_NAME}
+        ${UTILS}
         ${MODULE_APP_SRC}
-        ${MODULE_COMMON_SRC}
         ${MODULE_HAL_SRC}
+        ${MODULE_COMMON_SRC}
         ${MODULE_SRC})
 target_link_libraries(${PROJECT_NAME} m)
 

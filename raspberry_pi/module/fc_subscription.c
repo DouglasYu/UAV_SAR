@@ -7,11 +7,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include <utils/util_misc.h>
 #include <time.h>
+#include <math.h>
+#include <unistd.h>
 #include "dji_logger.h"
 #include "dji_platform.h"
 #include "fc_subscription.h"
 
 /* Private constants ---------------------------------------------------------*/
+#define USER_UTIL_UNUSED(x)                                 ((x) = (x))
 
 /* Private types -------------------------------------------------------------*/
 
@@ -215,7 +218,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uin
         //               timestamp->microsecond);
         // USER_LOG_INFO("quaternion: %f %f %f %f.\r\n", quaternion->q0, quaternion->q1, quaternion->q2, quaternion->q3);
         // USER_LOG_INFO("euler angles: pitch = %.2f roll = %.2f yaw = %.2f.", pitch, yaw, roll);
-        DjiTest_WidgetLogAppend("pitch = %.2f roll = %.2f yaw = %.2f.", pitch, yaw, roll);
+        USER_LOG_INFO("pitch = %.2f roll = %.2f yaw = %.2f.", pitch, yaw, roll);
     }
 
     fprintf(s_quaternionLog, "%u %u %.2f %.2f %.2f\n", timestamp->microsecond, timestamp->millisecond,
@@ -227,7 +230,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uin
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveGpsPositionCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
-    SER_UTIL_UNUSED(dataSize);
+    USER_UTIL_UNUSED(dataSize);
 
     T_DjiFcSubscriptionGpsPosition *gps = (T_DjiFcSubscriptionGpsPosition*) data;
 
@@ -250,7 +253,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveGpsPositionCallback(const ui
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveVelocityCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
-    SER_UTIL_UNUSED(dataSize);
+    USER_UTIL_UNUSED(dataSize);
 
     T_DjiFcSubscriptionVelocity* velocity = (T_DjiFcSubscriptionVelocity*) data;
 
