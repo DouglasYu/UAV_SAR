@@ -55,12 +55,16 @@ T_DjiReturnCode My_WidgetStartService(void)
     T_DjiReturnCode djiStat;
     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
 
+    // test the user log
+    // USER_LOG_ERROR("Hello there!");
+
     //Step 1 : Init DJI Widget
     djiStat = DjiWidget_Init();
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Dji test widget init error, stat = 0x%08llX", djiStat);
         return djiStat;
     }
+    USER_LOG_ERROR("Step 1 Finished!");
 
     //Step 2 : Set UI Config (Linux environment)
     char curFileDirPath[WIDGET_DIR_PATH_LEN_MAX];
@@ -108,12 +112,16 @@ T_DjiReturnCode My_WidgetStartService(void)
         return djiStat;
     }
 
+    USER_LOG_ERROR("Step 2 Finished!");
+
     //Step 3 : Set widget handler list
     djiStat = DjiWidget_RegHandlerList(s_widgetHandlerList, s_widgetHandlerListCount);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Set widget handler list error, stat = 0x%08llX", djiStat);
         return djiStat;
     }
+
+    USER_LOG_ERROR("Step 3 Finished!");
 
     //Step 4 : Run widget api sample task
     // if (osalHandler->TaskCreate("user_widget_task", DjiTest_WidgetTask, WIDGET_TASK_STACK_SIZE, NULL,
@@ -126,7 +134,7 @@ T_DjiReturnCode My_WidgetStartService(void)
 }
 
 /* Private functions definition ---------------------------------------------*/
-static void RecordTask(void *arg){
+static void* RecordTask(void *arg){
     USER_UTIL_UNUSED(arg);
 
     time_t currentTime = time(NULL);

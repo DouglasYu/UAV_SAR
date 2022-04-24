@@ -58,7 +58,7 @@ T_DjiReturnCode Osal_TaskCreate(const char *name, void *(*taskFunc)(void *), uin
 
     if (name != NULL)
         strncpy(nameDealed, name, sizeof(nameDealed) - 1);
-    result = pthread_setname_np(*(pthread_t *) *task, nameDealed);
+    // result = pthread_setname_np(*(pthread_t *) *task, nameDealed);
     if (result != 0) {
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }

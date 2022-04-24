@@ -77,27 +77,27 @@ T_DjiReturnCode FcSubscriptionStartService(void)
     time_t currentTime = time(NULL);
     struct tm *localTime = localtime(&currentTime);
     // quaternion logs
-    sprintf(filePath, "quaternion_%04d%02d%02d_%02d-%02d-%02d.log",
+    sprintf(filePath, "quaternion_logs/quaternion_%04d%02d%02d_%02d-%02d-%02d.log",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+            localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
     s_quaternionLog = fopen(filePath, "wb+");
     if (s_quaternionLog == NULL) {
         USER_LOG_ERROR("Open filepath time error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }
     // gps position logs
-    sprintf(filePath, "gps_%04d%02d%02d_%02d-%02d-%02d.log",
+    sprintf(filePath, "gps_position_logs/gps_%04d%02d%02d_%02d-%02d-%02d.log",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+            localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
     s_gpsLog = fopen(filePath, "wb+");
     if (s_gpsLog == NULL) {
         USER_LOG_ERROR("Open filepath time error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     }
     // velocity logs
-    sprintf(filePath, "velocity_%04d%02d%02d_%02d-%02d-%02d.log",
+    sprintf(filePath, "velocity_logs/velocity_%04d%02d%02d_%02d-%02d-%02d.log",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+            localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
     s_velocityLog = fopen(filePath, "wb+");
     if (s_velocityLog == NULL) {
         USER_LOG_ERROR("Open filepath time error.");

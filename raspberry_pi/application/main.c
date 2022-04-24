@@ -668,6 +668,18 @@ int main(int argc, char **argv)
     /* tests */
     printf("Mount position: %d\n", aircraftInfoBaseInfo.mountPosition);
 
+    /* start fc subscription */
+    // returnCode = FcSubscriptionStartService();
+    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("Cannot start FC subscription service.");
+    // }
+    
+    /* start widget settings */
+    returnCode = My_WidgetStartService();
+    // returnCode = DjiTest_WidgetStartService();
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Cannot start widget service.");
+    }
 
     while (1) {
         sleep(1);
