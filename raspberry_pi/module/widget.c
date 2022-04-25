@@ -64,7 +64,7 @@ T_DjiReturnCode My_WidgetStartService(void)
         USER_LOG_ERROR("Dji test widget init error, stat = 0x%08llX", djiStat);
         return djiStat;
     }
-    USER_LOG_ERROR("Step 1 Finished!");
+    // USER_LOG_INFO("Step 1 Finished!");
 
     //Step 2 : Set UI Config (Linux environment)
     char curFileDirPath[WIDGET_DIR_PATH_LEN_MAX];
@@ -112,7 +112,7 @@ T_DjiReturnCode My_WidgetStartService(void)
         return djiStat;
     }
 
-    USER_LOG_ERROR("Step 2 Finished!");
+    // USER_LOG_INFO("Step 2 Finished!");
 
     //Step 3 : Set widget handler list
     djiStat = DjiWidget_RegHandlerList(s_widgetHandlerList, s_widgetHandlerListCount);
@@ -121,7 +121,7 @@ T_DjiReturnCode My_WidgetStartService(void)
         return djiStat;
     }
 
-    USER_LOG_ERROR("Step 3 Finished!");
+    // USER_LOG_INFO("Step 3 Finished!");
 
     //Step 4 : Run widget api sample task
     // if (osalHandler->TaskCreate("user_widget_task", DjiTest_WidgetTask, WIDGET_TASK_STACK_SIZE, NULL,
@@ -130,10 +130,13 @@ T_DjiReturnCode My_WidgetStartService(void)
     //     return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     // }
 
+    // USER_LOG_INFO("Step 4 Finished!");
+
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
 
 /* Private functions definition ---------------------------------------------*/
+
 static void* RecordTask(void *arg){
     USER_UTIL_UNUSED(arg);
 
@@ -141,9 +144,9 @@ static void* RecordTask(void *arg){
     struct tm *localTime = localtime(&currentTime);
     char command[100];
 
-	sprintf(command, "arecord -D \"plughw:3,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
+    sprintf(command, "arecord -D \"plughw:3,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
         localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-        localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+        localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
 
     system(command);
 }
@@ -181,6 +184,20 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
     case 1:
         if(value == 1){
             /* start telemetry subscription */
+            // USER_LOG_INFO("Start recording.");
+            
+            // /* start recording process */
+            // if (s_recordThread == NULL){
+            //     osalHandler->TaskCreate("arecord_task", RecordTask, 4096, NULL, &s_recordThread);
+            //     djiStat = FcSubscriptionStartService();
+            //     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            //         USER_LOG_ERROR("Start fcSubscription service error.");
+            //         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+            //     }
+            // }
+
+            // s_recordThread = NULL;
+
             djiStat = FcSubscriptionStartService();
             if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
                 USER_LOG_ERROR("Start fcSubscription service error.");
@@ -190,8 +207,10 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
             if(s_recordThread == NULL){
                 osalHandler->TaskCreate("arecord_task", RecordTask, 4096, NULL, &s_recordThread);
             }
+
         } else {
             /* stop telemetry subscription */
+            USER_LOG_INFO("Stop recording.");
             djiStat = FcSubscriptionStopService();
             if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
                 USER_LOG_ERROR("Stop fcSubscription service error.");
@@ -205,6 +224,9 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
     /* This button will invoke a python script to process the received data */
     case 2:
         /* TODO */
+        if(value == 1){ 
+            USER_LOG_INFO("Data processing begins.");
+        }
         break;
     
     default:

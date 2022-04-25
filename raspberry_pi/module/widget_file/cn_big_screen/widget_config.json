@@ -3,7 +3,7 @@
     "major": 1,
     "minor": 0
   },
-  "main_interface": {
+  "config_interface": {
     "floating_window": {
       "is_enable": true
     },
