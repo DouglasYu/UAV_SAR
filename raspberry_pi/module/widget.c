@@ -48,6 +48,8 @@ static const uint32_t s_widgetHandlerListCount = sizeof(s_widgetHandlerList) / s
 static bool s_isWidgetFileDirPathConfigured = false;
 static char s_widgetFileDirPath[DJI_FILE_PATH_SIZE_MAX] = {0};
 static T_DjiTaskHandle s_recordThread = NULL;
+static T_DjiTaskHandle fc_startSubscriptionThread = NULL;
+static T_DjiTaskHandle fc_endSubscriptionThread = NULL;
 
 /* Exported functions definition ---------------------------------------------*/
 T_DjiReturnCode My_WidgetStartService(void)
@@ -137,6 +139,26 @@ T_DjiReturnCode My_WidgetStartService(void)
 
 /* Private functions definition ---------------------------------------------*/
 
+static void* StartDataSubscription(void *arg){
+    T_DjiReturnCode djiStat;
+
+    USER_UTIL_UNUSED(arg);
+    djiStat = FcSubscriptionStartService();
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Start fcSubscription service error.");
+    }
+}
+
+static void* EndDataSubscription(void *arg){
+    T_DjiReturnCode djiStat;
+    
+    USER_UTIL_UNUSED(arg);
+    djiStat = FcSubscriptionStopService();
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Stop fcSubscription service error.");
+    }
+}
+
 static void* RecordTask(void *arg){
     USER_UTIL_UNUSED(arg);
 
@@ -144,9 +166,11 @@ static void* RecordTask(void *arg){
     struct tm *localTime = localtime(&currentTime);
     char command[100];
 
-    sprintf(command, "arecord -D \"plughw:3,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
+    sprintf(command, "arecord -D \"plughw:1,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_files/record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
         localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
         localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
+
+    // sprintf(command, "arecord -D \"plughw:1,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record.wav\n");
 
     system(command);
 }
@@ -184,40 +208,35 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
     case 1:
         if(value == 1){
             /* start telemetry subscription */
-            // USER_LOG_INFO("Start recording.");
+            USER_LOG_INFO("Start recording.");
             
-            // /* start recording process */
-            // if (s_recordThread == NULL){
-            //     osalHandler->TaskCreate("arecord_task", RecordTask, 4096, NULL, &s_recordThread);
-            //     djiStat = FcSubscriptionStartService();
-            //     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            //         USER_LOG_ERROR("Start fcSubscription service error.");
-            //         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-            //     }
-            // }
-
-            // s_recordThread = NULL;
-
-            djiStat = FcSubscriptionStartService();
-            if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                USER_LOG_ERROR("Start fcSubscription service error.");
-                return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-            }
             /* start recording process */
-            if(s_recordThread == NULL){
+            if (fc_startSubscriptionThread == NULL){
+                osalHandler->TaskCreate("startfcsubscription_task", StartDataSubscription, 4096, NULL, &fc_startSubscriptionThread);
+            }
+
+            fc_startSubscriptionThread = NULL;
+            system("sudo killall -9 arecord");
+            if (s_recordThread == NULL){
                 osalHandler->TaskCreate("arecord_task", RecordTask, 4096, NULL, &s_recordThread);
             }
 
         } else {
             /* stop telemetry subscription */
             USER_LOG_INFO("Stop recording.");
-            djiStat = FcSubscriptionStopService();
-            if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-                USER_LOG_ERROR("Stop fcSubscription service error.");
-                return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+
+            fc_endSubscriptionThread = NULL;
+            if (fc_endSubscriptionThread == NULL){
+                osalHandler->TaskCreate("endfcsubscriptio_task", EndDataSubscription, 4096, NULL, &fc_endSubscriptionThread);
             }
-            /* kill the recording thread */
+            fc_endSubscriptionThread = NULL;
+
+            if (s_recordThread != NULL){
+                osalHandler->TaskDestroy(s_recordThread);
+            }
+            s_recordThread = NULL;
             system("sudo killall -9 arecord");
+
         }
         break;
 
