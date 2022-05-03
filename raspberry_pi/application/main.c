@@ -56,6 +56,7 @@
 #include "dji_sdk_config.h"
 #include "fc_subscription.h"
 #include "widget.h"
+#include "payload_xport.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define DJI_LOG_PATH                    "Logs/DJI"
@@ -673,6 +674,12 @@ int main(int argc, char **argv)
     // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
     //     USER_LOG_ERROR("Cannot start FC subscription service.");
     // }
+
+    /* rotate the xport */
+    returnCode = DjiTest_XPortStartService();
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Cannot start X-port service.");
+    }
     
     /* start widget settings */
     returnCode = My_WidgetStartService();
