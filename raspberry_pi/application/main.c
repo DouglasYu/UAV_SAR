@@ -681,15 +681,11 @@ int main(int argc, char **argv)
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
 
-    // T_DjiReturnCode djiStat;
-    // djiStat = DjiXPort_Init();
-
     /* rotate the xport */
     returnCode = DjiTest_XPortStartService();
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Cannot start X-port service.");
     }
-
     
     /* start widget settings */
     returnCode = My_WidgetStartService();

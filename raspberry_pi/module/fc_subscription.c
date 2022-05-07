@@ -30,6 +30,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveVelocityCallback(const uint8
 FILE* s_quaternionLog;
 FILE* s_gpsLog;
 FILE* s_velocityLog;
+int isRecording = 0;
 
 /* Exported functions definition ---------------------------------------------*/
 T_DjiReturnCode FcSubscriptionStartService(void)
@@ -138,6 +139,9 @@ T_DjiReturnCode FcSubscriptionStartService(void)
         USER_LOG_DEBUG("Subscribe topic gps position success.");
     }
 
+    /* turn on the recording flag */
+    isRecording = 1;
+
     /* we don’t need detail gps data tentatively. */
     // djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_DETAILS, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
     //                                            NULL);
@@ -160,11 +164,14 @@ T_DjiReturnCode FcSubscriptionStartService(void)
 
 T_DjiReturnCode FcSubscriptionStopService(void){
 
-    T_DjiReturnCode djiStat = DjiFcSubscription_DeInit();
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("Deinit fc subscription error.");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    }
+    // T_DjiReturnCode djiStat = DjiFcSubscription_DeInit();
+    // if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("Deinit fc subscription error.");
+    //     return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    // }
+
+    /* turn off the recording flag */
+    isRecording = 0;
 
     fclose(s_quaternionLog);
     fclose(s_gpsLog);
@@ -202,6 +209,8 @@ T_DjiReturnCode FcSubscriptionGetData(T_DjiFcSubscriptionRtkPosition* position, 
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
+    if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+    
     T_DjiFcSubscriptionQuaternion *quaternion = (T_DjiFcSubscriptionQuaternion *) data;
     dji_f64_t pitch, yaw, roll;
 
@@ -232,6 +241,8 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uin
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveGpsPositionCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
+    if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+
     USER_UTIL_UNUSED(dataSize);
 
     T_DjiFcSubscriptionGpsPosition *gps = (T_DjiFcSubscriptionGpsPosition*) data;
@@ -255,6 +266,8 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveGpsPositionCallback(const ui
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveVelocityCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
+    if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+    
     USER_UTIL_UNUSED(dataSize);
 
     T_DjiFcSubscriptionVelocity* velocity = (T_DjiFcSubscriptionVelocity*) data;
