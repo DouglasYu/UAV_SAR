@@ -209,12 +209,10 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
         if(value == 1){
             /* start telemetry subscription */
             USER_LOG_INFO("Start recording.");
-            
-            /* start recording process */
-            if (fc_startSubscriptionThread == NULL){
-                osalHandler->TaskCreate("startfcsubscription_task", StartDataSubscription, 4096, NULL, &fc_startSubscriptionThread);
-            }
 
+            FcSubscriptionStartService();
+
+            /* start recording process */
             fc_startSubscriptionThread = NULL;
             system("sudo killall -9 arecord");
             if (s_recordThread == NULL){
@@ -225,11 +223,7 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
             /* stop telemetry subscription */
             USER_LOG_INFO("Stop recording.");
 
-            fc_endSubscriptionThread = NULL;
-            if (fc_endSubscriptionThread == NULL){
-                osalHandler->TaskCreate("endfcsubscriptio_task", EndDataSubscription, 4096, NULL, &fc_endSubscriptionThread);
-            }
-            fc_endSubscriptionThread = NULL;
+            FcSubscriptionStopService();
 
             if (s_recordThread != NULL){
                 osalHandler->TaskDestroy(s_recordThread);

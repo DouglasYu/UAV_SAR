@@ -680,6 +680,7 @@ int main(int argc, char **argv)
         USER_LOG_ERROR("init data subscription module error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
+    FcSubscripeData();
 
     /* rotate the xport */
     returnCode = DjiTest_XPortStartService();

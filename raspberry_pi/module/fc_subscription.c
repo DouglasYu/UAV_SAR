@@ -33,19 +33,47 @@ FILE* s_velocityLog;
 int isRecording = 0;
 
 /* Exported functions definition ---------------------------------------------*/
+T_DjiReturnCode FcSubscripeData(void){
+
+    T_DjiReturnCode djiStat;
+    /** subscribe quaternion (四元数) 
+     * see dji_fc_subscription.h for the definitions of structs
+    */
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_QUATERNION, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               DjiTest_FcSubscriptionReceiveQuaternionCallback);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic quaternion error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_DEBUG("Subscribe topic quaternion success.");
+    }
+
+    /* subscribe velocity */
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_VELOCITY, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               DjiTest_FcSubscriptionReceiveVelocityCallback);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic velocity error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_DEBUG("Subscribe topic velocity success.");
+    }
+
+    /* subscribe gps position */
+    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_POSITION, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
+                                               DjiTest_FcSubscriptionReceiveGpsPositionCallback);
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Subscribe topic gps position error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    } else {
+        USER_LOG_DEBUG("Subscribe topic gps position success.");
+    }
+
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+}
+
 T_DjiReturnCode FcSubscriptionStartService(void)
 {
     T_DjiReturnCode djiStat;
-    // T_DjiOsalHandler *osalHandler = NULL;
-
-    // osalHandler = DjiPlatform_GetOsalHandler();
-    
-    // to not deinit
-    // djiStat = DjiFcSubscription_Init();
-    // if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-    //     USER_LOG_ERROR("init data subscription module error.");
-    //     return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    // }
 
     /* create a folder for recorded data if not exsited */
     char folderName[32];
@@ -105,38 +133,6 @@ T_DjiReturnCode FcSubscriptionStartService(void)
     if (s_velocityLog == NULL) {
         USER_LOG_ERROR("Open filepath time error.");
         return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    }
-
-    /** subscribe quaternion (四元数) 
-     * see dji_fc_subscription.h for the definitions of structs
-    */
-    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_QUATERNION, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
-                                               DjiTest_FcSubscriptionReceiveQuaternionCallback);
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("Subscribe topic quaternion error.");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    } else {
-        USER_LOG_DEBUG("Subscribe topic quaternion success.");
-    }
-
-    /* subscribe velocity */
-    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_VELOCITY, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
-                                               DjiTest_FcSubscriptionReceiveVelocityCallback);
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("Subscribe topic velocity error.");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    } else {
-        USER_LOG_DEBUG("Subscribe topic velocity success.");
-    }
-
-    /* subscribe gps position */
-    djiStat = DjiFcSubscription_SubscribeTopic(DJI_FC_SUBSCRIPTION_TOPIC_GPS_POSITION, DJI_DATA_SUBSCRIPTION_TOPIC_1_HZ,
-                                               DjiTest_FcSubscriptionReceiveGpsPositionCallback);
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("Subscribe topic gps position error.");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    } else {
-        USER_LOG_DEBUG("Subscribe topic gps position success.");
     }
 
     /* turn on the recording flag */
@@ -267,7 +263,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveVelocityCallback(const uint8
                                                                        const T_DjiDataTimestamp *timestamp)
 {
     if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
-    
+
     USER_UTIL_UNUSED(dataSize);
 
     T_DjiFcSubscriptionVelocity* velocity = (T_DjiFcSubscriptionVelocity*) data;

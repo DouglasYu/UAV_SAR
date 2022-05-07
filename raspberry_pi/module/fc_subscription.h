@@ -19,6 +19,7 @@ static bool s_userFcSubscriptionDataShow = true;
 
 T_DjiReturnCode FcSubscriptionStartService(void);
 T_DjiReturnCode FcSubscriptionStopService(void);
+T_DjiReturnCode FcSubscripeData(void);
 
 
 #endif
