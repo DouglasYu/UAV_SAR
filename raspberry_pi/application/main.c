@@ -643,12 +643,6 @@ int main(int argc, char **argv)
 // #endif
 //     }
 
-
-    returnCode = DjiCore_ApplicationStart();
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("start sdk application error");
-    }
-
     /* Create a thread to monitor system status. We dont need it for now. */
     // if (pthread_create(&s_monitorThread, NULL, DjiUser_MonitorTask, NULL) != 0) {
     //     USER_LOG_ERROR("create monitor task fail.");
@@ -675,11 +669,27 @@ int main(int argc, char **argv)
     //     USER_LOG_ERROR("Cannot start FC subscription service.");
     // }
 
+    returnCode = DjiCore_ApplicationStart();
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("start sdk application error");
+    }
+
+    T_DjiReturnCode djiStat;
+    djiStat = DjiFcSubscription_Init();
+    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("init data subscription module error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+
+    // T_DjiReturnCode djiStat;
+    // djiStat = DjiXPort_Init();
+
     /* rotate the xport */
     returnCode = DjiTest_XPortStartService();
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Cannot start X-port service.");
     }
+
     
     /* start widget settings */
     returnCode = My_WidgetStartService();

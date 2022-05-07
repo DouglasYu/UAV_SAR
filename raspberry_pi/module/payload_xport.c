@@ -28,13 +28,15 @@
 #include "payload_xport.h"
 #include "dji_logger.h"
 #include "dji_platform.h"
-#include "utils/util_misc.h"
+#include "./../module_sample/utils/util_misc.h"
 #include "dji_aircraft_info.h"
-#include "camera_emu/test_payload_cam_emu_base.h"
+#include "./../module_sample/camera_emu/test_payload_cam_emu_base.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define XPORT_TASK_FREQ             (10)
 #define XPORT_TASK_STACK_SIZE       (2048)
+#define ZOOM_OPTICAL_FOCAL_MIN_LENGTH           (10)
+#define ZOOM_DIGITAL_BASE_FACTOR                (1.0)
 
 /* Private types -------------------------------------------------------------*/
 
@@ -50,6 +52,10 @@ static T_DjiMutexHandle s_userXPortMutex;
 static T_DjiGimbalSystemState s_userXPortSystemState = {0};
 static bool s_isUserXPortInited = false;
 static bool s_isUserXPortSystemStateVaild = false;
+static T_DjiMutexHandle s_zoomMutex = {0};
+static uint32_t s_cameraOpticalZoomFocalLength = ZOOM_OPTICAL_FOCAL_MIN_LENGTH;
+static bool s_isCamInited = false;
+static dji_f32_t s_cameraDigitalZoomFactor = ZOOM_DIGITAL_BASE_FACTOR;
 
 /* Exported functions definition ---------------------------------------------*/
 T_DjiReturnCode DjiTest_XPortStartService(void)
@@ -58,12 +64,14 @@ T_DjiReturnCode DjiTest_XPortStartService(void)
     T_DjiXPortLimitAngle limitAngle = {0};
     T_DjiAircraftInfoBaseInfo aircraftInfoBaseInfo = {0};
     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
+    // USER_LOG_INFO("Check 1.");
 
     djiStat = DjiXPort_Init();
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("XPort init error: 0x%08llX.", djiStat);
         return djiStat;
     }
+    // USER_LOG_INFO("Check 2.");
 
     s_isUserXPortInited = true;
 
@@ -136,6 +144,7 @@ T_DjiReturnCode DjiTest_XPortStartService(void)
         return djiStat;
     }
 
+
     djiStat = DjiXPort_SetGimbalModeSync(DJI_GIMBAL_MODE_FREE);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("set XPort gimbal mode error: 0x%08llX.", djiStat);
@@ -148,32 +157,35 @@ T_DjiReturnCode DjiTest_XPortStartService(void)
         return djiStat;
     }
 
-    // if (osalHandler->TaskCreate("user_xport_task", UserXPort_Task, XPORT_TASK_STACK_SIZE, NULL, &s_userXPortThread) !=
-    //     DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-    //     USER_LOG_ERROR("user XPort task create error.");
-    //     return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    // }
+    if (osalHandler->TaskCreate("user_xport_task", UserXPort_Task, XPORT_TASK_STACK_SIZE, NULL, &s_userXPortThread) !=
+        DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("user XPort task create error.");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    }
+
+    // USER_LOG_INFO("Check 3.");
 
     /* rotate 90 degree in yaw */
-    djiStat = DjiXPort_SetSpeedConversionFactor(1 / (3));
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("set speed conversion factor error: %d.", djiStat);
-    }
-    T_DjiGimbalRotationProperty rotation = {
-        .rotationValueInvalidFlag.pitch = false,
-        .rotationValueInvalidFlag.roll = false,
-        .rotationValueInvalidFlag.yaw = true,
-        .relativeAngleRotation.actionTime = 300
-    };
-    T_DjiAttitude3d rotationValue = {
-        .pitch = 0,
-        .roll = 0,
-        .yaw = 900
-    };
-    djiStat = DjiXPort_RotateSync(DJI_GIMBAL_ROTATION_MODE_RELATIVE_ANGLE, rotation, rotationValue);
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("Rotate Xport error.", djiStat);
-    }
+    // djiStat = DjiXPort_SetSpeedConversionFactor(1 / (3));
+    // if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("set speed conversion factor error: %d.", djiStat);
+    // }
+    // T_DjiGimbalRotationProperty rotation = {
+    //     .rotationValueInvalidFlag.pitch = false,
+    //     .rotationValueInvalidFlag.roll = false,
+    //     .rotationValueInvalidFlag.yaw = true,
+    //     .relativeAngleRotation.actionTime = 300
+    // };
+    // T_DjiAttitude3d rotationValue = {
+    //     .pitch = 0,
+    //     .roll = 0,
+    //     .yaw = 900
+    // };
+    // djiStat = DjiXPort_RotateSync(DJI_GIMBAL_ROTATION_MODE_RELATIVE_ANGLE, rotation, rotationValue);
+    // if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("Rotate Xport error.", djiStat);
+    // }
+    // USER_LOG_INFO("Check 4.");
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
@@ -366,6 +378,56 @@ static T_DjiReturnCode ReceiveXPortAttitudeInformation(T_DjiGimbalAttitudeInform
     USER_LOG_DEBUG("receive XPort attitude information:");
     USER_LOG_DEBUG("XPort attitude: pitch %d, roll %d, yaw %d.", attitudeInformation.attitude.pitch,
                    attitudeInformation.attitude.roll, attitudeInformation.attitude.yaw);
+
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+}
+
+T_DjiReturnCode DjiTest_CameraGetOpticalZoomFactor(dji_f32_t *factor)
+{
+    T_DjiReturnCode returnCode;
+    T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
+
+    returnCode = osalHandler->MutexLock(s_zoomMutex);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("lock mutex error: 0x%08llX.", returnCode);
+        return returnCode;
+    }
+
+    //Formula:factor = currentFocalLength / minFocalLength
+    *factor = (dji_f32_t) s_cameraOpticalZoomFocalLength / ZOOM_OPTICAL_FOCAL_MIN_LENGTH;
+
+    returnCode = osalHandler->MutexUnlock(s_zoomMutex);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("unlock mutex error: 0x%08llX.", returnCode);
+        return returnCode;
+    }
+
+    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+}
+
+bool DjiTest_CameraIsInited(void)
+{
+    return s_isCamInited;
+}
+
+T_DjiReturnCode DjiTest_CameraGetDigitalZoomFactor(dji_f32_t *factor)
+{
+    T_DjiReturnCode returnCode;
+    T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
+
+    returnCode = osalHandler->MutexLock(s_zoomMutex);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("lock mutex error: 0x%08llX.", returnCode);
+        return returnCode;
+    }
+
+    *factor = s_cameraDigitalZoomFactor;
+
+    returnCode = osalHandler->MutexUnlock(s_zoomMutex);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("unlock mutex error: 0x%08llX.", returnCode);
+        return returnCode;
+    }
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }

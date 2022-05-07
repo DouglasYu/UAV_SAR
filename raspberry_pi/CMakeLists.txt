@@ -8,7 +8,7 @@ set(CMAKE_CXX_COMPILER "arm-linux-gnueabihf-g++")
 
 set(COMMON_CXX_FLAGS "-std=c++11 -pthread")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage -g")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage -lgcov")
 
 ## "uname -m" to auto distinguish Manifold2-G or Manifold2-C

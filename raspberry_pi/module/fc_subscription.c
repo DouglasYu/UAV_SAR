@@ -38,11 +38,13 @@ T_DjiReturnCode FcSubscriptionStartService(void)
     // T_DjiOsalHandler *osalHandler = NULL;
 
     // osalHandler = DjiPlatform_GetOsalHandler();
-    djiStat = DjiFcSubscription_Init();
-    if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("init data subscription module error.");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
-    }
+    
+    // to not deinit
+    // djiStat = DjiFcSubscription_Init();
+    // if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("init data subscription module error.");
+    //     return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
+    // }
 
     /* create a folder for recorded data if not exsited */
     char folderName[32];
