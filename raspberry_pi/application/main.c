@@ -57,7 +57,7 @@
 #include "fc_subscription.h"
 #include "widget.h"
 #include "payload_xport.h"
-#include "test_payload_cam_emu_media.h"
+#include "../module_sample/camera_emu/test_payload_cam_emu_media.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define DJI_LOG_PATH                    "Logs/DJI"
@@ -406,18 +406,18 @@ int main(int argc, char **argv)
         .Stat = Osal_Stat,
     };
 
-    // T_DjiSocketHandler socketHandler = {
-    //     .Socket = Osal_Socket,
-    //     .Bind = Osal_Bind,
-    //     .Close = Osal_Close,
-    //     .UdpSendData = Osal_UdpSendData,
-    //     .UdpRecvData = Osal_UdpRecvData,
-    //     .TcpListen = Osal_TcpListen,
-    //     .TcpAccept = Osal_TcpAccept,
-    //     .TcpConnect = Osal_TcpConnect,
-    //     .TcpSendData = Osal_TcpSendData,
-    //     .TcpRecvData = Osal_TcpRecvData,
-    // };
+    T_DjiSocketHandler socketHandler = {
+        .Socket = Osal_Socket,
+        .Bind = Osal_Bind,
+        .Close = Osal_Close,
+        .UdpSendData = Osal_UdpSendData,
+        .UdpRecvData = Osal_UdpRecvData,
+        .TcpListen = Osal_TcpListen,
+        .TcpAccept = Osal_TcpAccept,
+        .TcpConnect = Osal_TcpConnect,
+        .TcpSendData = Osal_TcpSendData,
+        .TcpRecvData = Osal_TcpRecvData,
+    };
     
     // T_DjiHalUsbBulkHandler usbBulkHandler = {
     //     .UsbBulkInit = HalUsbBulk_Init,
@@ -451,11 +451,11 @@ int main(int argc, char **argv)
     //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     // }
 
-    // returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-    //     printf("register osal socket handler error");
-    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    // }
+    returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        printf("register osal socket handler error");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
 
     returnCode = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
