@@ -57,6 +57,7 @@
 #include "fc_subscription.h"
 #include "widget.h"
 #include "payload_xport.h"
+#include "test_payload_cam_emu_media.h"
 
 /* Private constants ---------------------------------------------------------*/
 #define DJI_LOG_PATH                    "Logs/DJI"
@@ -693,6 +694,12 @@ int main(int argc, char **argv)
     // returnCode = DjiTest_WidgetStartService();
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("Cannot start widget service.");
+    }
+
+    /* enable camera module */
+    returnCode = DjiTest_CameraEmuMediaStartService();
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        USER_LOG_ERROR("Cannot start camera emu service.");
     }
 
     while (1) {

@@ -189,12 +189,12 @@ T_DjiReturnCode DjiTest_CameraEmuMediaStartService(void)
         return DJI_ERROR_SYSTEM_MODULE_CODE_UNKNOWN;
     }
 
-    returnCode = osalHandler->TaskCreate("user_camera_media_task", UserCameraMedia_SendVideoTask, 2048,
-                                         NULL, &s_userSendVideoThread);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("user send video task create error.");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
-    }
+    // returnCode = osalHandler->TaskCreate("user_camera_media_task", UserCameraMedia_SendVideoTask, 2048,
+    //                                      NULL, &s_userSendVideoThread);
+    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     USER_LOG_ERROR("user send video task create error.");
+    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+    // }
 
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
