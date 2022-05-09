@@ -30,6 +30,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "dji_typedef.h"
 #include "dji_payload_camera.h"
+#include "../utils/util_file.h"
 
 #ifdef __cplusplus
 extern "C" {

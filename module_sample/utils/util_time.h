@@ -31,7 +31,7 @@
 extern "C" {
 #endif
 
-#ifdef SYSTEM_ARCH_LINUX
+// #ifdef SYSTEM_ARCH_LINUX
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
@@ -53,7 +53,7 @@ T_DjiRunTimeStamps DjiUtilTime_GetRunTimeStamps(void);
 }
 #endif
 
-#endif
+// #endif
 
 #endif // DJI_DP_UTILS_H
 

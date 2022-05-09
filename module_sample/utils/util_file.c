@@ -23,7 +23,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef SYSTEM_ARCH_LINUX
+// #ifdef SYSTEM_ARCH_LINUX
 
 #include "util_file.h"
 #include <time.h>
@@ -202,6 +202,6 @@ out:
 
 /* Private functions definition-----------------------------------------------*/
 
-#endif
+// #endif
 
 /****************** (C) COPYRIGHT DJI Innovations *****END OF FILE****/
