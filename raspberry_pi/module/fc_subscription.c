@@ -205,7 +205,10 @@ T_DjiReturnCode FcSubscriptionGetData(T_DjiFcSubscriptionRtkPosition* position, 
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
-    if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+    
+    // printf("%d\n", isRecording);
+    
+    if(isRecording == 0) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
     
     T_DjiFcSubscriptionQuaternion *quaternion = (T_DjiFcSubscriptionQuaternion *) data;
     dji_f64_t pitch, yaw, roll;
@@ -237,7 +240,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveQuaternionCallback(const uin
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveGpsPositionCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
-    if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+    if(isRecording == 0) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 
     USER_UTIL_UNUSED(dataSize);
 
@@ -262,7 +265,7 @@ static T_DjiReturnCode DjiTest_FcSubscriptionReceiveGpsPositionCallback(const ui
 static T_DjiReturnCode DjiTest_FcSubscriptionReceiveVelocityCallback(const uint8_t *data, uint16_t dataSize,
                                                                        const T_DjiDataTimestamp *timestamp)
 {
-    if(~isRecording) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+    if(isRecording == 0) return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 
     USER_UTIL_UNUSED(dataSize);
 

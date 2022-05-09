@@ -144,8 +144,9 @@ T_DjiReturnCode DjiTest_XPortStartService(void)
         return djiStat;
     }
 
-
-    djiStat = DjiXPort_SetGimbalModeSync(DJI_GIMBAL_MODE_FREE);
+    /* select the X-port gimbal mode */
+    // djiStat = DjiXPort_SetGimbalModeSync(DJI_GIMBAL_MODE_FREE);
+    djiStat = DjiXPort_SetGimbalModeSync(DJI_GIMBAL_MODE_YAW_FOLLOW);
     if (djiStat != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
         USER_LOG_ERROR("set XPort gimbal mode error: 0x%08llX.", djiStat);
         return djiStat;
