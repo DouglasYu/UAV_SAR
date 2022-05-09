@@ -383,54 +383,54 @@ static T_DjiReturnCode ReceiveXPortAttitudeInformation(T_DjiGimbalAttitudeInform
     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
 }
 
-T_DjiReturnCode DjiTest_CameraGetOpticalZoomFactor(dji_f32_t *factor)
-{
-    T_DjiReturnCode returnCode;
-    T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
+// T_DjiReturnCode DjiTest_CameraGetOpticalZoomFactor(dji_f32_t *factor)
+// {
+//     T_DjiReturnCode returnCode;
+//     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
 
-    returnCode = osalHandler->MutexLock(s_zoomMutex);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("lock mutex error: 0x%08llX.", returnCode);
-        return returnCode;
-    }
+//     returnCode = osalHandler->MutexLock(s_zoomMutex);
+//     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+//         USER_LOG_ERROR("lock mutex error: 0x%08llX.", returnCode);
+//         return returnCode;
+//     }
 
-    //Formula:factor = currentFocalLength / minFocalLength
-    *factor = (dji_f32_t) s_cameraOpticalZoomFocalLength / ZOOM_OPTICAL_FOCAL_MIN_LENGTH;
+//     //Formula:factor = currentFocalLength / minFocalLength
+//     *factor = (dji_f32_t) s_cameraOpticalZoomFocalLength / ZOOM_OPTICAL_FOCAL_MIN_LENGTH;
 
-    returnCode = osalHandler->MutexUnlock(s_zoomMutex);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("unlock mutex error: 0x%08llX.", returnCode);
-        return returnCode;
-    }
+//     returnCode = osalHandler->MutexUnlock(s_zoomMutex);
+//     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+//         USER_LOG_ERROR("unlock mutex error: 0x%08llX.", returnCode);
+//         return returnCode;
+//     }
 
-    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
-}
+//     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+// }
 
-bool DjiTest_CameraIsInited(void)
-{
-    return s_isCamInited;
-}
+// bool DjiTest_CameraIsInited(void)
+// {
+//     return s_isCamInited;
+// }
 
-T_DjiReturnCode DjiTest_CameraGetDigitalZoomFactor(dji_f32_t *factor)
-{
-    T_DjiReturnCode returnCode;
-    T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
+// T_DjiReturnCode DjiTest_CameraGetDigitalZoomFactor(dji_f32_t *factor)
+// {
+//     T_DjiReturnCode returnCode;
+//     T_DjiOsalHandler *osalHandler = DjiPlatform_GetOsalHandler();
 
-    returnCode = osalHandler->MutexLock(s_zoomMutex);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("lock mutex error: 0x%08llX.", returnCode);
-        return returnCode;
-    }
+//     returnCode = osalHandler->MutexLock(s_zoomMutex);
+//     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+//         USER_LOG_ERROR("lock mutex error: 0x%08llX.", returnCode);
+//         return returnCode;
+//     }
 
-    *factor = s_cameraDigitalZoomFactor;
+//     *factor = s_cameraDigitalZoomFactor;
 
-    returnCode = osalHandler->MutexUnlock(s_zoomMutex);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        USER_LOG_ERROR("unlock mutex error: 0x%08llX.", returnCode);
-        return returnCode;
-    }
+//     returnCode = osalHandler->MutexUnlock(s_zoomMutex);
+//     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+//         USER_LOG_ERROR("unlock mutex error: 0x%08llX.", returnCode);
+//         return returnCode;
+//     }
 
-    return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
-}
+//     return DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS;
+// }
 
 /****************** (C) COPYRIGHT DJI Innovations *****END OF FILE****/

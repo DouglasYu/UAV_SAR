@@ -23,7 +23,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef SYSTEM_ARCH_LINUX
+// #ifdef SYSTEM_ARCH_LINUX
 
 #include "util_time.h"
 #include <sys/resource.h>
@@ -58,5 +58,5 @@ T_DjiRunTimeStamps DjiUtilTime_GetRunTimeStamps(void)
 
 /* Private functions definition-----------------------------------------------*/
 
-#endif
+// #endif
 /****************** (C) COPYRIGHT DJI Innovations *****END OF FILE****/

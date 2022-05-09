@@ -31,7 +31,7 @@
 extern "C" {
 #endif
 
-#ifdef SYSTEM_ARCH_LINUX
+// #ifdef SYSTEM_ARCH_LINUX
 
 /* Includes ------------------------------------------------------------------*/
 #include <dji_typedef.h>
@@ -63,7 +63,7 @@ T_DjiReturnCode UtilFile_GetFileData(FILE *file, uint32_t offset, uint16_t len, 
 }
 #endif
 
-#endif
+// #endif
 
 #endif // UTIL_FILE_H
 
