@@ -24,6 +24,7 @@ file(GLOB_RECURSE MODULE_APP_SRC application/*.c)
 file(GLOB_RECURSE MODULE_SRC module/*.c)
 file(GLOB_RECURSE UTILS ../module_sample/utils/*.c)
 file(GLOB_RECURSE CAM_EMU ../module_sample/camera_emu/*.c)
+file(GLOB_RECURSE GIMBAL_EMU ../module_sample/gimbal_emu/*.c)
 # file(GLOB_RECURSE MODULE_SAMPLE_SRC ../module_sample/*.c)
 
 # include_directories(../module_sample)
@@ -41,7 +42,8 @@ add_executable(${PROJECT_NAME}
         ${MODULE_HAL_SRC}
         ${MODULE_COMMON_SRC}
         ${MODULE_SRC}
-        ${CAM_EMU})
+        ${CAM_EMU}
+        ${GIMBAL_EMU})
 target_link_libraries(${PROJECT_NAME} m)
 
 add_custom_command(TARGET ${PROJECT_NAME}
