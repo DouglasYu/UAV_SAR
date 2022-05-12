@@ -58,6 +58,7 @@
 #include "widget.h"
 #include "payload_xport.h"
 #include "../module_sample/camera_emu/test_payload_cam_emu_media.h"
+#include "../module_sample/camera_emu/test_payload_cam_emu_base.h"
 // #include "../module_sample/utils/util_file.h"
 
 /* Private constants ---------------------------------------------------------*/
@@ -452,11 +453,11 @@ int main(int argc, char **argv)
     //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     // }
 
-    returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        printf("register osal socket handler error");
-        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    }
+    // returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
+    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //     printf("register osal socket handler error");
+    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    // }
 
     returnCode = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -544,10 +545,10 @@ int main(int argc, char **argv)
 // #endif
 
 // #ifdef CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON
-//         returnCode = DjiTest_CameraEmuBaseStartService();
-//         if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-//             USER_LOG_ERROR("camera emu common init error");
-//         }
+        // returnCode = DjiTest_CameraEmuBaseStartService();
+        // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        //     USER_LOG_ERROR("camera emu common init error");
+        // }
 // #endif
 
 // #ifdef CONFIG_MODULE_SAMPLE_CAMERA_MEDIA_ON
@@ -698,12 +699,12 @@ int main(int argc, char **argv)
     }
 
     /* enable camera module */
-    if (DjiUser_CheckNetCableConnectStatus() == true) {
-    returnCode = DjiTest_CameraEmuMediaStartService();
-        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-            USER_LOG_ERROR("camera emu media init error");
-        }
-    }
+    // if (DjiUser_CheckNetCableConnectStatus() == true) {
+    // returnCode = DjiTest_CameraEmuMediaStartService();
+    //     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+    //         USER_LOG_ERROR("camera emu media init error");
+    //     }
+    // }
 
     while (1) {
         sleep(1);
