@@ -42,6 +42,8 @@ static char *s_widgetTypeNameArray[] = {
     "Int input box"
 };
 
+char lastWavFilePath[100];
+
 /* the list storing the value of each component */
 static int32_t s_widgetValueList[sizeof(s_widgetHandlerList) / sizeof(T_DjiWidgetHandlerListItem)] = {0};
 static const uint32_t s_widgetHandlerListCount = sizeof(s_widgetHandlerList) / sizeof(T_DjiWidgetHandlerListItem);
@@ -169,6 +171,10 @@ static void* RecordTask(void *arg){
     sprintf(command, "arecord -D \"plughw:1,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_files/record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
         localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
         localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
+    
+    snprintf(lastWavFilePath, 100, "record_%04d%02d%02d_%02d-%02d-%02d.wav", 
+        localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
+        localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
 
     // sprintf(command, "arecord -D \"plughw:1,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record.wav\n");
 
@@ -236,9 +242,9 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
 
     /* This button will invoke a python script to process the received data */
     case 2:
-        /* TODO */
         if(value == 1){ 
             USER_LOG_INFO("Data processing begins.");
+            system("time python ../application/main.py ./record_files/%s 2 0 0 ~/UAV_SAR/module_sample/camera_emu/media_file/", lastWavFilePath);
         }
         break;
     
