@@ -30,7 +30,8 @@ static T_DjiReturnCode DjiTestWidget_GetWidgetValue(E_DjiWidgetType widgetType, 
 static const T_DjiWidgetHandlerListItem s_widgetHandlerList[] = {
     {0, DJI_WIDGET_TYPE_SWITCH, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
     {1, DJI_WIDGET_TYPE_SWITCH, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
-    {2, DJI_WIDGET_TYPE_BUTTON, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL}
+    {2, DJI_WIDGET_TYPE_BUTTON, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL},
+    {3, DJI_WIDGET_TYPE_INT_INPUT_BOX, DjiTestWidget_SetWidgetValue, DjiTestWidget_GetWidgetValue, NULL}
 };
 
 static char *s_widgetTypeNameArray[] = {
@@ -42,7 +43,8 @@ static char *s_widgetTypeNameArray[] = {
     "Int input box"
 };
 
-char lastWavFilePath[100];
+char lastWavFilePath[100]; /* the path to the newest wav file */
+int droneVelocity = 2; /* the velocity for data analysis */
 
 /* the list storing the value of each component */
 static int32_t s_widgetValueList[sizeof(s_widgetHandlerList) / sizeof(T_DjiWidgetHandlerListItem)] = {0};
@@ -244,8 +246,17 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
     case 2:
         if(value == 1){ 
             USER_LOG_INFO("Data processing begins.");
-            system("time python ../application/main.py ./record_files/%s 2 0 0 ~/UAV_SAR/module_sample/camera_emu/media_file/", lastWavFilePath);
+            char command[100];
+            sprintf(command, "time python ../application/main.py ./record_files/%s %d 0 0 ~/UAV_SAR/module_sample/camera_emu/media_file/",
+                lastWavFilePath, droneVelocity);
+            system(command);
         }
+        break;
+
+    /* this input box is to set the velocity value for data analysis */
+    case 3:
+        USER_LOG_INFO("Input box value: %d", value);
+        droneVelocity = value;
         break;
     
     default:

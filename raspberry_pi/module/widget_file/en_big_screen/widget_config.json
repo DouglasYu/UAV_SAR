@@ -46,6 +46,12 @@
           "is_enable": true,
           "mapping_config_display_order": 2
         }
+      },
+      {
+        "widget_index": 3,
+        "widget_type": "int_input_box",
+        "widget_name": "Velocity for Data Analysis",
+        "int_input_box_hint": "unit:m/s"
       }
     ]
   }

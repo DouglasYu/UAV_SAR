@@ -453,11 +453,11 @@ int main(int argc, char **argv)
     //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
     // }
 
-    // returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
-    // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-    //     printf("register osal socket handler error");
-    //     return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
-    // }
+    returnCode = DjiPlatform_RegSocketHandler(&socketHandler);
+    if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+        printf("register osal socket handler error");
+        return DJI_ERROR_SYSTEM_MODULE_CODE_SYSTEM_ERROR;
+    }
 
     returnCode = DjiPlatform_RegFileSystemHandler(&fileSystemHandler);
     if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
@@ -544,21 +544,17 @@ int main(int argc, char **argv)
 //         }
 // #endif
 
-// #ifdef CONFIG_MODULE_SAMPLE_CAMERA_EMU_ON
-        // returnCode = DjiTest_CameraEmuBaseStartService();
-        // if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-        //     USER_LOG_ERROR("camera emu common init error");
-        // }
-// #endif
+        returnCode = DjiTest_CameraEmuBaseStartService();
+        if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+            USER_LOG_ERROR("camera emu common init error");
+        }
 
-// #ifdef CONFIG_MODULE_SAMPLE_CAMERA_MEDIA_ON
-//         if (DjiUser_CheckNetCableConnectStatus() == true) {
-//             returnCode = DjiTest_CameraEmuMediaStartService();
-//             if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
-//                 USER_LOG_ERROR("camera emu media init error");
-//             }
-//         }
-// #endif
+        if (DjiUser_CheckNetCableConnectStatus() == true) {
+            returnCode = DjiTest_CameraEmuMediaStartService();
+            if (returnCode != DJI_ERROR_SYSTEM_MODULE_CODE_SUCCESS) {
+                USER_LOG_ERROR("camera emu media init error");
+            }
+        }
 
 // #ifdef CONFIG_MODULE_SAMPLE_FC_SUBSCRIPTION_ON
 //         returnCode = DjiTest_FcSubscriptionStartService();
