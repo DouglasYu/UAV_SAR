@@ -170,13 +170,31 @@ static void* RecordTask(void *arg){
     struct tm *localTime = localtime(&currentTime);
     char command[100];
 
-    sprintf(command, "arecord -D \"plughw:1,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_files/record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
-        localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-        localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
+    int year, month, day, hour, minute, second;
+    year = localTime->tm_year + 1900;
+    month = localTime->tm_mon + 1;
+    day = localTime->tm_mday;
+    hour = localTime->tm_hour;
+    minute = localTime->tm_min;
+    second = localTime->tm_sec;
+
+    char ret[100];
+    FILE* fp;
+
+    fp = popen("arecord -l", "r");
+    if(fp != NULL){
+        fgets(ret, sizeof(ret), fp);
+        fgets(ret, sizeof(ret), fp);
+    }
+    USER_LOG_INFO("Get arecord card number %c.", ret[5]);
+    pclose(fp);
+
+    sprintf(command, "arecord -D \"plughw:%c,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record_files/record_%04d%02d%02d_%02d-%02d-%02d.wav\n", 
+        ret[5], year, month, day, hour, minute, second);
     
-    snprintf(lastWavFilePath, 100, "record_%04d%02d%02d_%02d-%02d-%02d.wav", 
-        localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-        localTime->tm_hour + 7, localTime->tm_min, localTime->tm_sec);
+    sprintf(lastWavFilePath, "record_%04d%02d%02d_%02d-%02d-%02d.wav", 
+        year, month, day, hour, minute, second);
+    // sprintf(lastWavFilePath, "404%04d", year + 1900);
 
     // sprintf(command, "arecord -D \"plughw:1,0\" -f S16_LE -r 48000 -c 2 -d 1200 -t wav ./record.wav\n");
 
@@ -222,11 +240,13 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
 
             /* start recording process */
             fc_startSubscriptionThread = NULL;
-            system("sudo killall -9 arecord");
+            if(s_recordThread != NULL){
+                system("sudo killall -9 arecord");
+            }
+            
             if (s_recordThread == NULL){
                 osalHandler->TaskCreate("arecord_task", RecordTask, 4096, NULL, &s_recordThread);
             }
-
         } else {
             /* stop telemetry subscription */
             USER_LOG_INFO("Stop recording.");
@@ -247,9 +267,13 @@ static T_DjiReturnCode DjiTestWidget_SetWidgetValue(E_DjiWidgetType widgetType, 
         if(value == 1){ 
             USER_LOG_INFO("Data processing begins.");
             char command[100];
-            sprintf(command, "time python ../application/main.py ./record_files/%s %d 0 0 ~/UAV_SAR/module_sample/camera_emu/media_file/",
+            sprintf(command, "python ../main.py ./record_files/%s %d 0 0 ~/UAV_SAR/module_sample/camera_emu/media_file/",
                 lastWavFilePath, droneVelocity);
-            system(command);
+            // USER_LOG_INFO("%s", command);
+            // FILE* fp;
+            // fp = popen(command, "r");
+            // pclose(fp);
+            USER_LOG_INFO("Data process ends.");
         }
         break;
 

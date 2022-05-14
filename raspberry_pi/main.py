@@ -24,7 +24,7 @@ def wKA_FMCW(wavpath, v, start_offset, end_offset, out_img_path):
 
     now = datetime.datetime.now()
     fileName = "sar_image_{}-{}-{}-{}-{}-{}".format(now.year, now.month, now.day, now.hour, now.minute, now.second)
-    export_path = os.path.join(out_img_path, fileName+'.png')
+    export_path = os.path.join(out_img_path, fileName+'.jpg')
     fig_title = wavpath.strip().split('/')[-1]
     # print(now)
 
